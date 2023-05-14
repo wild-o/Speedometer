@@ -3,27 +3,25 @@ const gas = document.getElementById("pedal");
 const brake = document.getElementById("brake");
 
 gas.addEventListener("mousedown", Accelerate);
-//gas.addEventListener("mouseup", Decelerate);
+gas.addEventListener("mouseup", Decelerate);
 brake.addEventListener("mousedown", Brake);
 
-
 let LINEAR_ACC = 1 / 2;
-let updateInterval = 50;
 let UPDATE = 0;
+let interval = 75;
+let throttle = true;
 
 let interv = setInterval(() => {
-  if (UPDATE > 0 && UPDATE < 200) {
+  if (UPDATE > 0 && UPDATE < 200 && throttle == true) {
     UPDATE += LINEAR_ACC;
     newNum.innerHTML = UPDATE;
   }
-}, updateInterval);
-
+}, interval);
 
 function Accelerate() {
+  throttle = true;
   UPDATE++;
   LINEAR_ACC = 1;
-
-  console.log(UPDATE);
 }
 
 function Decelerate() {
@@ -37,13 +35,18 @@ function Decelerate() {
 }
 
 function Brake() {
-  LINEAR_ACC = -1;
-  updateInterval = 20;
+  throttle = false;
 
-  if (UPDATE === 0) UPDATE = 1;
-  // Add to decelerate
-  if (UPDATE === 200) UPDATE = 199;
-  console.log(UPDATE)
+  var myFunction = function () {
+    if (UPDATE > 0 && UPDATE < 200 && throttle == false) {
+      interval = 40;
+
+      UPDATE += LINEAR_ACC;
+      newNum.innerHTML = UPDATE;
+      setTimeout(myFunction, interval); //How does this exactly work?
+    }
+  };
+  setTimeout(myFunction, interval);
 }
 
 //Discovery: appending innerHTML a millisecond slower makes
@@ -56,3 +59,8 @@ function Brake() {
 
 // Accelerate and Declerate need to be able to share the speed value
 // Now I can perhaps use the global variable UPDATE
+
+
+//On the Brake function, it was suggested to use a recursive function
+//Not fully understanding why this works just yet:
+//https://stackoverflow.com/questions/1280263/changing-the-interval-of-setinterval-while-its-running
