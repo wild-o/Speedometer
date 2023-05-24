@@ -4,54 +4,88 @@ const brake = document.getElementById("brake");
 const shiftChange = document.getElementById("gear");
 const gearHUD = document.getElementById("gear-notification");
 
-gas.addEventListener("mousedown", Accelerate);
-gas.addEventListener("mouseup", Decelerate);
+//gas.addEventListener("mousedown", Accelerate);
+//gas.addEventListener("mouseup", Decelerate);
 brake.addEventListener("mousedown", Brake);
 shiftChange.addEventListener("click", gearShift);
-
 let LINEAR_ACC = 1 / 2;
-let UPDATE = 0;
+let speed = 0;
 let interval = 90;
 let throttle = true;
+let DIRECTION = 1;
 
 let lowerBound = 0;
 let upperBound = 25;
 let shiftCount = 1;
 
+let isAcc = false;
+let isDec = false;
+let isBrake = false;
+// gas.addEventListener("keydown", function(e){
+//   if(e.code === 'KeyW'){
+//     Accelerate();
+//   }
+// })
+
+// gas.addEventListener("keyup", function(e){
+//   if(e.code === 'KeyS'){
+//     Decelerate();
+//   }
+// })
+
+
+
+
 let interv = setInterval((x = lowerBound, y = upperBound) => {
-  if (UPDATE > x && UPDATE < y && throttle == true) {
-    UPDATE += LINEAR_ACC;
-    newNum.innerHTML = UPDATE;
+  if (speed == 0) {
+    vxr = vyr = vxl = vyl = 0;
+  }
+
+  if (speed > 0 ) {
+    switch (DIRECTION) {
+      case 1:
+        vxr = (speed
+                * delta);
+        break;
+    }
+   // console.log(speed);
+  } 
+
+  if (speed > x && speed < y && throttle == true) {
+    speed += LINEAR_ACC;
+    newNum.innerHTML = speed; //updates the speedometer
   }
 }, interval);
 
-function Accelerate() {
+function Accelerate() { // Gotta go fast
   throttle = true;
-  UPDATE++;
+  if (speed == 0) speed++;
   LINEAR_ACC = 1;
-
-  console.log(UPDATE);
+  isAcc = true;
+  isDec = false;
+  console.log("Acc " + speed);
 }
 
-function Decelerate(x = lowerBound, y = upperBound) {
+function Decelerate(x = lowerBound, y = upperBound) { // whoa there
   LINEAR_ACC = -1;
-
-  if (UPDATE === x) UPDATE = x + 1;
+  
+  if (speed === x) speed = x + 1;
   // Add to decelerate
-  if (UPDATE === y) UPDATE = y - 1;
-
-  console.log(UPDATE);
+  if (speed === y) speed = y - 1;
+  isDec = true;
+  isAcc = false;
+  console.log("Dec " + speed);
 }
 
 function Brake() {
   throttle = false;
-
+  isBrake = false;
   var myFunction = function (x = lowerBound, y = upperBound) {
-    if (UPDATE > x && UPDATE < y && throttle == false) {
+    if (speed > x && speed < y && throttle == false) {
       interval = 25;
 
-      UPDATE += LINEAR_ACC;
-      newNum.innerHTML = UPDATE;
+      speed += LINEAR_ACC;
+      newNum.innerHTML = speed;
       setTimeout(myFunction, interval); //How does this exactly work?
     }
   };
@@ -64,13 +98,12 @@ function gearShift() {
     shiftCount++;
     console.log(`You are now in ${shiftCount} gear!`);
     gearHUD.innerHTML = `You are now in gear position:  ${shiftCount}`;
-    
   } else {
     lowerBound = 0;
     upperBound = 25;
     shiftCount = 1;
-    UPDATE = 0;
-    newNum.innerHTML = UPDATE;
+    speed = 0;
+    newNum.innerHTML = speed;
     gearHUD.innerHTML = `You are now in gear position:  ${shiftCount}`;
   }
 }

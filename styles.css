@@ -76,3 +76,7 @@ body {
 .gauge-reading {
   font-size: large;
 }
+
+#canvas {
+  border: solid 2px red ;
+}
