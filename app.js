@@ -6,9 +6,10 @@ const gearHUD = document.getElementById("gear-notification");
 
 //gas.addEventListener("mousedown", Accelerate);
 //gas.addEventListener("mouseup", Decelerate);
-brake.addEventListener("mousedown", Brake);
-shiftChange.addEventListener("click", gearShift);
+//brake.addEventListener("mousedown", Brake);
+//shiftChange.addEventListener("click", gearShift);
 let LINEAR_ACC = 1 / 2;
+let BRAKE_FORCE = 2;
 let speed = 0;
 let interval = 90;
 let throttle = true;
@@ -33,65 +34,68 @@ let isBrake = false;
 //   }
 // })
 
-
-
-
 let interv = setInterval((x = lowerBound, y = upperBound) => {
   if (speed == 0) {
-    vxr = vyr = vxl = vyl = 0;
+    velocity_x = vyr = vxl = vyl = 0;
   }
 
-  if (speed > 0 ) {
-    switch (DIRECTION) {
-      case 1:
-        vxr = (speed
-                * delta);
-        break;
-    }
-   // console.log(speed);
-  } 
+  if (speed > 0) {
+
+    velocity_x = shiftCount == -1 ? speed * delta * -1: speed * delta;
+
+    // console.log(speed);
+  }
 
   if (speed > x && speed < y && throttle == true) {
     speed += LINEAR_ACC;
     newNum.innerHTML = speed; //updates the speedometer
   }
+  
+  if (speed > y) 
+  {
+    LINEAR_ACC = -1;
+    isDec = true;
+    isAcc = false;
+   // speed = upperBound;
+   // newNum.innerHTML = speed;
+  }
+
+  if (isBrake && speed > 0) {
+    speed -= BRAKE_FORCE;
+    newNum.innerHTML = speed;
+    //console.log("Braking" + BRAKE_FORCE);
+  }
+
 }, interval);
 
-function Accelerate() { // Gotta go fast
-  throttle = true;
-  if (speed == 0) speed++;
-  LINEAR_ACC = 1;
-  isAcc = true;
-  isDec = false;
-  console.log("Acc " + speed);
+function Accelerate() {
+  // Gotta go fast
+  if (shiftCount !== 0) {
+    throttle = true;
+    if (speed == 0) speed++;
+    LINEAR_ACC = 1;
+    isAcc = true;
+    isDec = false;
+    console.log("Acc " + speed);
+  }
+
 }
 
-function Decelerate(x = lowerBound, y = upperBound) { // whoa there
+function Decelerate(x = lowerBound, y = upperBound) {
+  // whoa there
   LINEAR_ACC = -1;
-  
-  if (speed === x) speed = x + 1;
-  // Add to decelerate
-  if (speed === y) speed = y - 1;
-  isDec = true;
-  isAcc = false;
-  console.log("Dec " + speed);
+
+
+    if (speed === x) speed = x + 1;
+    // Add to decelerate
+    if (speed === y) speed = y - 1;
+    isDec = true;
+    isAcc = false;
+    console.log("Dec " + speed);
+
 }
 
-function Brake() {
-  throttle = false;
-  isBrake = false;
-  var myFunction = function (x = lowerBound, y = upperBound) {
-    if (speed > x && speed < y && throttle == false) {
-      interval = 25;
-
-      speed += LINEAR_ACC;
-      newNum.innerHTML = speed;
-      setTimeout(myFunction, interval); //How does this exactly work?
-    }
-  };
-  setTimeout(myFunction, interval);
-}
-
+/*
 function gearShift() {
   if (!(upperBound >= 150)) {
     upperBound += 25;
@@ -107,7 +111,62 @@ function gearShift() {
     gearHUD.innerHTML = `You are now in gear position:  ${shiftCount}`;
   }
 }
+function gearShiftUp() {
+  if (shiftCount < 6) {
+    upperBound += 25;
+    shiftCount++;
+    console.log(`You are now in ${shiftCount} gear!`);
+    gearHUD.innerHTML = `You are now in gear position:  ${shiftCount}`;
+    if (shiftCount == 0) {
+      Decelerate();
+    }
+  } 
+}
 
+function gearShiftDown() {
+  if (shiftCount > -1) {
+    upperBound -= 25;
+    shiftCount--;
+
+    if (shiftCount == 0) {
+      upperBound = 0;
+      Decelerate();
+    }
+
+    if (shiftCount == -1) {
+      upperBound = 25;
+    }
+
+    
+    console.log(`You are now in ${shiftCount} gear!`);
+    gearHUD.innerHTML = `You are now in gear position:  ${shiftCount}`;
+  } 
+} */
+/**
+ * @param {1 | -1} value
+ */
+function shift(value) {
+  const REVERSE = -1
+  const NEUTRAL = 0
+  if (value === 1 && shiftCount < 6) {
+    upperBound += 25;
+    shiftCount++;
+  }
+  else if (value === -1 && shiftCount > REVERSE) {
+    upperBound -= 25;
+    shiftCount--;
+
+    if (shiftCount == -1) {
+      upperBound = 25;
+    }    
+  }
+  if (shiftCount === NEUTRAL) {
+    upperBound = 0;
+    Decelerate();
+  }
+  console.log(`You are now in ${shiftCount} gear!`);
+  gearHUD.innerHTML = `You are now in gear position:  ${shiftCount}`;
+}
 //Discovery: appending innerHTML a millisecond slower makes
 //a nice speed distortion effect on the tachometer
 

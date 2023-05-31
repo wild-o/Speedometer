@@ -3,21 +3,30 @@ addEventListener("keydown", function (e) {
   switch (e.code) {
     case "ArrowRight":
     case "KeyD":
-      vxr = (speed
+      /*vxr = (speed
          * delta);
       console.log('update', speed)
-      console.log('dt', delta)
+      console.log('dt', delta)*/
       break;
     case "ArrowLeft":
     case "KeyA":
-      vxl = -5;
+
       break;
-    case "ArrowDown":
+
     case "KeyS":
      // vyr = 5;
-      if (!isBrake) Brake();
+      isBrake = true;
       break;
+      
+    case "ArrowDown":
+      // gearShiftDown();
+      shift(-1)
+      break;
+
     case "ArrowUp":
+      // gearShiftUp();
+      shift(1)
+      break;
     case "KeyW":
     //  vyl = -5;
       if (!isAcc) Accelerate();
@@ -36,25 +45,29 @@ addEventListener("keyup", function (e) {
   switch (e.code) {
     case "ArrowRight":
     case "KeyD":
-      vxr = 0;
+    //  vxr = 0;
       break;
     case "ArrowLeft":
     case "KeyA":
-      delta = 0;
-      vxl = 0;
+    //  delta = 0;
+    //  vxl = 0;
       break;
-    case "ArrowDown":
+
     case "KeyS":
-      vyr = 0;
+    //  vyr = 0;
+    isBrake = false;
       break;
-    case "ArrowUp":
+
     case "KeyW":
 
-      if (!isDec) 
-        Decelerate();
-
-      vyl = 0;
+    if (!isDec) 
+      Decelerate();
+    //  vyl = 0;
       break;
+    case "ArrowDown":
+    case "ArrowUp":
+      break;
+
   }
   /*  if (e.code == "KeyD") vxr = 0;
   if (e.code == "KeyA") vxl = 0;
