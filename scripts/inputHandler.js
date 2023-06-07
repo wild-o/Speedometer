@@ -3,11 +3,11 @@ addEventListener("keydown", function (e) {
   switch (e.code) {
     case "ArrowRight":
     case "KeyD":
-      rotateCar(car, 15, delta)
+      rotateCar(car, 5, delta)
       break;
     case "ArrowLeft":
     case "KeyA":
-      rotateCar(car, -15, delta)
+      rotateCar(car, -5, delta)
       break;
 
     case "KeyS":

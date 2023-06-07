@@ -34,7 +34,6 @@ function loopDeLoop() {
   timestamp = Date.now() / pacing
   ctx.clearRect(0, 0, canvas.clientWidth, canvas.height);
   updateCarPosition(car, delta)
-
-  requestAnimationFrame(loopDeLoop);
+    requestAnimationFrame(loopDeLoop);
 }
 loopDeLoop();
