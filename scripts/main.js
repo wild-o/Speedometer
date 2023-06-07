@@ -71,6 +71,18 @@ function Accelerate(car) {
   LINEAR_ACC = 1;
   if (shiftCount !== 0 && throttle) {
     car.velocity += LINEAR_ACC * delta;
+
+
+    //todo bounds check
+    if (shiftCount === -1) {
+      //  car.x -= (car.velocity_x * delta)
+      car.x -= car.velocity * delta * Math.cos(toRadians(car.angle_in_degrees));
+      car.y -= car.velocity * delta * Math.sin(toRadians(car.angle_in_degrees));
+    } else {
+      //  car.x += (car.velocity_x * delta)
+      car.x += car.velocity * delta * Math.cos(toRadians(car.angle_in_degrees));
+      car.y += car.velocity * delta * Math.sin(toRadians(car.angle_in_degrees));
+    }
   }
 }
 
@@ -143,15 +155,15 @@ function updateCarPosition(car, delta) {
 
   newNum.innerHTML = Math.round(car.velocity); // using round to smooth out the display
 
-  if (shiftCount === -1) {
-    //  car.x -= (car.velocity_x * delta)
-    car.x -= car.velocity * delta * Math.cos(toRadians(car.angle_in_degrees));
-    car.y -= car.velocity * delta * Math.sin(toRadians(car.angle_in_degrees));
-  } else {
-    //  car.x += (car.velocity_x * delta)
-    car.x += car.velocity * delta * Math.cos(toRadians(car.angle_in_degrees));
-    car.y += car.velocity * delta * Math.sin(toRadians(car.angle_in_degrees));
-  }
+  // if (shiftCount === -1) {
+  //   //  car.x -= (car.velocity_x * delta)
+  //   car.x -= car.velocity * delta * Math.cos(toRadians(car.angle_in_degrees));
+  //   car.y -= car.velocity * delta * Math.sin(toRadians(car.angle_in_degrees));
+  // } else {
+  //   //  car.x += (car.velocity_x * delta)
+  //   car.x += car.velocity * delta * Math.cos(toRadians(car.angle_in_degrees));
+  //   car.y += car.velocity * delta * Math.sin(toRadians(car.angle_in_degrees));
+  // }
   // todo - don't let the car drive off the canvas
   const borderWidth = 2;
   function crashNoBurnFireHard() {
@@ -178,6 +190,10 @@ function updateCarPosition(car, delta) {
     crashNoBurnFireHard();
     car.y = borderWidth;
   }
+
+
+
+  
   // move origin to center of car for rotation axis to be correct
   ctx.translate(car.x + car.width / 2, car.y + car.height / 2);
   // rotate the car based on its angle
